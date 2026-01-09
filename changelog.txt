@@ -1,5 +1,10 @@
 ---------------------------------------------------------------------------------------------------
-Version: 2.0.0
+Version: 2.0.2
+Date: 2026-01-09
+
+- Fixed technology icon that uses all science packs (https://mods.factorio.com/mod/KetsInfiniteTechnologies/discussion/6954ff7346c5c0e6708c28c4)
+---------------------------------------------------------------------------------------------------
+Version: 2.0.1
 Date: 2024-11-23
 
 - Fixed technology suffix error (https://mods.factorio.com/mod/KetsInfiniteTechnologies/discussion/673ab50e7f07acaaf21bae7e)

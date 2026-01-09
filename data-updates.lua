@@ -1,7 +1,9 @@
+local util = require("util")
+
 -- mod variables
 local tools = data.raw.tool;
-local packs = {} -- contains ingredients for all packs technology
-local tech_prerequisites = {} -- contains technology prerequisites for all pack technology
+local packs = {} -- contains ingredients for all technology packs
+local tech_prerequisites = {} -- contains technology prerequisites for all technology packs
 local formula = "";
 
 -- settings data
@@ -62,7 +64,11 @@ for k, v in pairs(tools) do
 			if v.icon_mipmaps ~= nil then
 				technology.icon_mipmaps = v.icon_mipmaps;
 			end
-			technology.order = "Ket-IT-" .. v.order;
+			if technology.order ~= nil then
+				technology.order = "Ket-IT-" .. v.order;
+			else
+				technology.order = "ket_IT-" .. string.sub(k, 1, 3)
+			end
 			technology.max_level = "infinite";
 			technology.ignore_cost_multiplier = cost_multiplier;
 			technology.unit = {
@@ -94,8 +100,8 @@ if all_packs then
 			localised_name = "All packs infinite technology",
 			type = "technology",
 			icon_size = 64, icon_mipmaps = 4,
-			icon = "__base__/graphics/icons/checked-green.png",
-			order = "Ket-IT-zzzzz", -- 11881376-th slphabetic [a-z] technology order
+			icon = "__base__/graphics/icons/signal/signal-checked-green.png",
+			order = "Ket-IT-zzzzz", -- 11881376-th alphabetic [a-z] technology order
 			max_level = "infinite",
 			ignore_cost_multiplier = cost_multiplier,
 			unit = {
@@ -106,4 +112,10 @@ if all_packs then
 			prerequisites = tech_prerequisites
 		}
 	}
+	labEntity = util.copy(data.raw["lab"]["lab"])
+	labEntity.name = "Lab-for-infinite-technology";
+	log(tech_prerequisites)
+	print(tech_prerequisites)
+	labEntity.inputs = tech_prerequisites;
+	data:extend({labEntity})
 end
