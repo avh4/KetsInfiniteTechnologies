@@ -1,6 +1,9 @@
+local util = require("util")
+
 -- mod variables
 local tools = data.raw.tool;
-local packs = {} -- contains ingredients for all packs technology
+local packs = {} -- contains ingredients for all technology packs
+local tech_prerequisites = {} -- contains technology prerequisites for all technology packs
 local formula = "";
 
 -- settings data
@@ -60,7 +63,11 @@ for k, v in pairs(tools) do
 			if v.icon_mipmaps ~= nil then
 				technology.icon_mipmaps = v.icon_mipmaps;
 			end
-			technology.order = "Ket-IT-" .. v.order;
+			if technology.order ~= nil then
+				technology.order = "Ket-IT-" .. v.order;
+			else
+				technology.order = "ket_IT-" .. string.sub(k, 1, 3)
+			end
 			technology.max_level = "infinite";
 			technology.ignore_cost_multiplier = cost_multiplier;
 			technology.unit = {
@@ -70,10 +77,14 @@ for k, v in pairs(tools) do
 				},
 				time = research_time
 			}
+			if data.raw["technology"][k] ~= nil then
+				technology.prerequisites = {k}
+				table.insert(tech_prerequisites, k)
+			end
 			-- if technology name ends with "-digits" then replace '-' to ' '
 			if technology.name:find('(.+)-(%d+)$') then
 				local p1, p2 = technology.name:match('(.+)-(%d+)$')
-				technology.name = p1 .. " " .. p2;
+				technology.name = p1 .. "_" .. p2;
 			end
 			data:extend{technology};
 		end
@@ -88,15 +99,22 @@ if all_packs then
 			localised_name = "All packs infinite technology",
 			type = "technology",
 			icon_size = 64, icon_mipmaps = 4,
-			icon = "__base__/graphics/icons/checked-green.png",
-			order = "Ket-IT-zzzzz", -- 11881376-th slphabetic [a-z] technology order
+			icon = "__base__/graphics/icons/signal/signal-checked-green.png",
+			order = "Ket-IT-zzzzz", -- 11881376-th alphabetic [a-z] technology order
 			max_level = "infinite",
 			ignore_cost_multiplier = cost_multiplier,
 			unit = {
 				count_formula = formula,
 				ingredients = packs,
 				time = research_time
-			}
+			},
+			prerequisites = tech_prerequisites
 		}
 	}
+	labEntity = util.copy(data.raw["lab"]["lab"])
+	labEntity.name = "Lab-for-infinite-technology";
+	log(tech_prerequisites)
+	print(tech_prerequisites)
+	labEntity.inputs = tech_prerequisites;
+	data:extend({labEntity})
 end
